@@ -1,0 +1,62 @@
+因为这两个数组已经排好序，我们可以把两个指针分别放在两个数组的末尾，即nums1 的
+m 􀀀 1 位和nums2 的n 􀀀 1 位。每次将较大的那个数字复制到nums1 的后边，然后向前移动一位。
+因为我们也要定位nums1 的末尾，所以我们还需要第三个指针，以便复制。
+在以下的代码里，我们直接利用m 和n 当作两个数组的指针，再额外创立一个pos 指针，起
+始位置为m+n􀀀1。每次向前移动m 或n 的时候，也要向前移动pos。这里需要注意，如果nums1
+的数字已经复制完，不要忘记把nums2 的数字继续复制；如果nums2 的数字已经复制完，剩余
+nums1 的数字不需要改变，因为它们已经被排好序。
+
+注意这里我们使用了++ 和--的小技巧：a++ 和++a 都是将a 加1，但是a++ 返回值为a，而
+++a 返回值为a+1。如果只是希望增加a 的值，而不需要返回值，则推荐使用++a，其运行速度
+会略快一些。
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+int pos = m-- + n-- - 1;
+while (m >= 0 && n >= 0) {
+nums1[pos--] = nums1[m] > nums2[n]? nums1[m--]: nums2[n--];
+}
+while (n >= 0) {
+nums1[pos--] = nums2[n--];
+}
+}
+3.4 快慢指针
+142. Linked List Cycle II (Medium)
+题目描述
+给定一个链表，如果有环路，找出环路的开始点。
+3.5 滑动窗口– 11/143 –
+输入输出样例
+输入是一个链表，输出是链表的一个节点。如果没有环路，返回一个空指针。
+图3.1: 题目142 - 输入样例
+在这个样例中，值为2 的节点即为环路的开始点。
+如果没有特殊说明，LeetCode 采用如下的数据结构表示链表。
+struct ListNode {
+int val;
+ListNode *next;
+ListNode(int x) : val(x), next(nullptr) {}
+};
+题解
+对于链表找环路的问题，有一个通用的解法——快慢指针（Floyd 判圈法）。给定两个指针，
+分别命名为slow 和fast，起始位置在链表的开头。每次fast 前进两步，slow 前进一步。如果fast
+可以走到尽头，那么说明没有环路；如果fast 可以无限走下去，那么说明一定有环路，且一定存
+在一个时刻slow 和fast 相遇。当slow 和fast 第一次相遇时，我们将fast 重新移动到链表开头，并
+让slow 和fast 每次都前进一步。当slow 和fast 第二次相遇时，相遇的节点即为环路的开始点。
+ListNode *detectCycle(ListNode *head) {
+ListNode *slow = head, *fast = head;
+// 判断是否存在环路
+do {
+if (!fast || !fast->next) return nullptr;
+fast = fast->next->next;
+slow = slow->next;
+} while (fast != slow);
+// 如果存在，查找环路节点
+fast = head;
+while (fast != slow){
+slow = slow->next;
+fast = fast->next;
+}
+return fast;
+}
+3.5 滑动窗口
+76. MinimumWindow Substring (Hard)
+3.6 练习– 12/143 –
+题目描述
+给定两个字符串S 和T，求S 中包含T 所
